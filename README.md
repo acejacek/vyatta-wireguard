@@ -5,6 +5,7 @@ to support [WireGuard](https://www.wireguard.io/).
 
 ## Table of Contents
 * [Installation](#installation)
+* [Upgrade](#upgrade)
 * [Uninstallation](#uninstallation)
 * [Usage](#usage)
 * [Routing](#routing)
@@ -21,6 +22,25 @@ sudo dpkg -i wireguard-${BOARD}-${RELEASE}.deb
 ```
 
 After you will have be able to create a `wireguard` interface (`show interfaces`).
+
+---
+
+### Upgrade
+Download the [latest release](https://github.com/Lochnair/vyatta-wireguard/releases) for your model and then perform upgrade with:
+```bash
+configure
+set interfaces wireguard wg0 route-allowed-ips false
+commit
+delete interfaces wireguard
+commit
+sudo rmmod wireguard
+sudo dpkg -i /path/to/wireguard-${BOARD}-${RELEASE}.deb
+sudo modprobe wireguard
+load
+commit
+exit
+```
+This allows the upgrade without reboot.
 
 ---
 
@@ -103,7 +123,7 @@ The binaries are statically linked against [musl libc](https://www.musl-libc.org
 
 ### Packaging
 1. Clone the repo `git clone https://github.com/Lochnair/vyatta-wireguard`
-2. Get the WireGuard version number from Lochnair's build server's latest sucessfully build from [build.lochnair.net/](https://build.lochnair.net/job/ubiquiti/job/wireguard-fw2.0/lastCompletedBuild/) (e.g. refs/tags/0.0.20181218)
+2. Get the WireGuard version number from Lochnair's build server's latest successfully build from [build.lochnair.net/](https://build.lochnair.net/job/ubiquiti/job/wireguard-fw2.0/lastCompletedBuild/) (e.g. refs/tags/0.0.20181218)
 3. Edit the verion number in `debian/control` to match the build server.
 4. Run `./update_binaries.sh`
 5. Run `make`
